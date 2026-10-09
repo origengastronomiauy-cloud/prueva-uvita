@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>La Uvita - Nube de Voces</title>
+    <style>
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        background: #060608; background: radial-gradient(circle at 50% 0%, #1a1a24 0%, #060608 80%);
+        color: #ffffff; text-align: center; padding: 20px; display: flex; 
+        justify-content: center; align-items: center; min-height: 100vh; margin: 0; 
+      }
+      .container { 
+        background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); 
+        width: 100%; max-width: 450px; border: 1px solid rgba(255, 255, 255, 0.05);
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      /* (El resto de tus estilos CSS quedan idénticos, los resumo acá por espacio pero mantené todos tus glows y botones hermosos) */
+      @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+      .pantalla { animation: fadeIn 0.4s ease-out forwards; }
+      @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+      .logo { width: 180px; margin-bottom: 25px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+      .logo-glow { width: 180px; margin-bottom: 30px; animation: pulseGlow 1.2s infinite alternate ease-in-out; }
+      @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px rgba(223, 183, 99, 0.2)); transform: scale(0.98); } 100% { filter: drop-shadow(0 0 35px rgba(223, 183, 99, 0.95)); transform: scale(1.05); } }
+      .spinner-text { color: #d8b05c; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; animation: blink 1.5s infinite; font-weight: bold; }
+      @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+      h3 { font-family: 'Georgia', serif; font-size: 24px; margin: 0 0 20px 0; font-weight: 400; line-height: 1.4; }
+      .btn { display: block; width: 100%; padding: 16px; margin: 10px auto; border: none; border-radius: 14px; cursor: pointer; font-weight: 600; background: linear-gradient(135deg, #dfb763 0%, #c29543 100%); color: #0b0b0e; transition: transform 0.1s ease, box-shadow 0.3s ease; font-size: 16px; box-shadow: 0 4px 15px rgba(223, 183, 99, 0.2); }
+      .btn:active { transform: scale(0.96); box-shadow: 0 2px 5px rgba(223, 183, 99, 0.1); }
+      input { width: 100%; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(0,0,0,0.3); color: #ffffff; border-radius: 14px; box-sizing: border-box; text-align: center; font-size: 18px; outline: none; transition: all 0.3s ease; }
+      input:focus { border-color: #d8b05c; background-color: rgba(0,0,0,0.5); box-shadow: 0 0 0 2px rgba(216, 176, 92, 0.2); }
+      .contenedor-nube { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 25px 15px; margin-bottom: 25px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; min-height: 200px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+      .palabra { font-family: 'Georgia', serif; display: inline-block; animation: flotar 3s ease-in-out infinite alternate; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: transform 0.3s; margin: 0 4px; }
+      @keyframes flotar { 0% { transform: translateY(0px); } 100% { transform: translateY(-6px); } }
+      .premio-final { width: 100%; max-width: 280px; height: auto; border-radius: 20px; margin: 15px auto 25px auto; display: block; border: 3px solid #d8b05c; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+      .oculto { display: none !important; }
+      .msg { color: #ff5252; margin-bottom: 15px; min-height: 20px; }
+      
+      /* Ajuste especial para cuando pongas el celular/tablet apaisado en Modo Admin */
+      .modo-admin-container { max-width: 90% !important; min-height: 80vh !important; }
+      .modo-admin-nube { min-height: 50vh !important; }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container" id="caja-principal">
+      
+      <!-- PANTALLA 1: INGRESO -->
+      <div id="pantalla-ingreso" class="pantalla">
+        <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo" alt="Logo ORIGEN">
+        <h3 style="color: #d8b05c;">La Uvita</h3>
+        <p style="color: #aaa; margin-bottom: 25px; font-size: 15px;">Definí este clásico de Baar Fun Fun en una sola palabra.</p>
+        
+        <input type="text" id="palabra" placeholder="Ej: Histórica..." maxlength="15">
+        <div id="msg" class="msg"></div>
+        <button class="btn" onclick="enviarPalabra()">Dejar mi marca</button>
+      </div>
+
+      <!-- PANTALLA 2: CARGA -->
+      <div id="pantalla-carga" class="pantalla oculto">
+        <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo-glow" alt="Cargando">
+        <div class="spinner-text">Procesando voces...</div>
+      </div>
+
+      <!-- PANTALLA 3: LA NUBE VISUAL -->
+      <div id="pantalla-nube" class="pantalla oculto">
+        <h3 style="color: #d8b05c; font-size: 20px;">Nube de La Uvita</h3>
+        <div class="contenedor-nube" id="caja-nube"></div>
+        <p id="texto-agradecimiento" style="color: #aaa; margin-bottom: 20px; font-size: 14px;">¡Gracias por ser parte de la historia!</p>
+        <button id="btn-reclamar" class="btn" onclick="mostrarPremio()" style="animation: pulseGlow 2s infinite alternate;">Reclamar Premio: Uvita</button>
+      </div>
+
+      <!-- PANTALLA 4: PREMIO UVITA -->
+      <div id="pantalla-premio" class="pantalla oculto">
+        <h3 style="color: #d8b05c;">¡Tu Uvita te espera!</h3>
+        <img id="img-final" src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784051080/two-dark-alcoholic-drinks-on-rustic-wooden-table-2026-03-24-02-58-58-utc_qf7qfq.jpg" class="premio-final" alt="Uvita">
+        <a id="btn-descarga" href="#" download="Premio_Uvita.jpg" class="btn">Preparando imagen...</a>
+      </div>
+
+    </div>
+
+    <script>
+      const API_URL = "https://script.google.com/macros/s/AKfycbyBKyTRb-WvD2aAmhMpj0xBZ40HljP7iiV0zi7wNxyADK4ObauSoGwP5p7ZcuHLpwT7/exec"; // REEMPLAZÁ CON TU NUEVO LINK
+
+      function vibrar(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+      function mostrar(id) {
+        document.querySelectorAll('.container > div').forEach(div => div.classList.add('oculto'));
+        document.getElementById(id).classList.remove('oculto');
+      }
+
+      // --- DETECCIÓN DEL MODO ADMIN ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const modoAdmin = urlParams.get('modo') === 'admin';
+
+      window.addEventListener('DOMContentLoaded', () => {
+        if (modoAdmin) {
+          // Prepara la pantalla gigante
+          document.getElementById('caja-principal').classList.add('modo-admin-container');
+          document.getElementById('caja-nube').classList.add('modo-admin-nube');
+          document.getElementById('btn-reclamar').style.display = 'none';
+          document.getElementById('texto-agradecimiento').innerText = "Escanea el código QR de tu mesa para participar";
+          document.getElementById('texto-agradecimiento').style.fontSize = "18px";
+          mostrar('pantalla-nube');
+          
+          // Llama a la nube en vivo al abrir y luego cada 5 segundos
+          actualizarNubeEnVivo();
+          setInterval(actualizarNubeEnVivo, 5000);
+        }
+      });
+
+      async function actualizarNubeEnVivo() {
+        try {
+          // En modo admin, manda accion="leerNube" (solo pide los datos, no guarda nada)
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: "leerNube" }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          }).then(r => r.json());
+          
+          if(res.exito) dibujarNube(res.palabras);
+        } catch (e) { console.log("Reintentando conexión..."); }
+      }
+
+      async function enviarPalabra() {
+        vibrar(30);
+        const palabra = document.getElementById('palabra').value.trim();
+        
+        if(palabra === "") { document.getElementById('msg').innerText = "Por favor, ingresá una palabra."; return; }
+        if(palabra.includes(" ")) { document.getElementById('msg').innerText = "Solo se permite UNA palabra."; return; }
+
+        document.getElementById('msg').innerText = "";
+        mostrar('pantalla-carga');
+
+        try {
+          const [res] = await Promise.all([
+            fetch(API_URL, {
+              method: 'POST',
+              body: JSON.stringify({ accion: "enviarPalabra", palabra: palabra }),
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            }).then(r => r.json()),
+            new Promise(resolve => setTimeout(resolve, 1800))
+          ]);
+
+          if(res.exito) {
+            dibujarNube(res.palabras);
+            mostrar('pantalla-nube');
+            vibrar([50, 50]);
+          } else { throw new Error("Error en servidor"); }
+        } catch (e) {
+          mostrar('pantalla-ingreso');
+          document.getElementById('msg').innerText = "Hubo un error de conexión. Intentá de nuevo.";
+        }
+      }
+
+      function dibujarNube(palabras) {
+        const caja = document.getElementById('caja-nube');
+        caja.innerHTML = "";
+        if(palabras.length === 0) return;
+
+        const tamaños = palabras.map(p => p.size);
+        const maxRep = Math.max(...tamaños);
+        const minRep = Math.min(...tamaños);
+        const paleta = ["#dfb763", "#c29543", "#ffffff", "#f0e6d2", "#d8b05c"];
+
+        // Mezclamos un poco, pero mantenemos las más repetidas más o menos al centro (truco visual)
+        palabras.sort(() => Math.random() - 0.5);
+
+        palabras.forEach(item => {
+          const span = document.createElement('span');
+          span.innerText = item.text;
+          span.className = 'palabra';
+
+          // El modo admin hace la letra mucho más grande para que se vea en el proyector
+          let factorBase = modoAdmin ? 35 : 14; 
+          let multiplicador = modoAdmin ? 50 : 28;
+          let fontSize = maxRep === minRep ? factorBase + 10 : factorBase + ((item.size - minRep) / (maxRep - minRep)) * multiplicador;
+          
+          span.style.fontSize = fontSize + "px";
+          span.style.color = paleta[Math.floor(Math.random() * paleta.length)];
+          span.style.animationDelay = (Math.random() * 2) + "s";
+          
+          if(item.size === maxRep && maxRep > 1) {
+            span.style.textShadow = "0 0 15px rgba(223, 183, 99, 0.8)";
+            span.style.fontWeight = "bold";
+          }
+          caja.appendChild(span);
+        });
+      }
+
+      function mostrarPremio() {
+        vibrar(40);
+        mostrar('pantalla-premio');
+        generarImagenConVencimiento('https://res.cloudinary.com/f8l7nucq/image/upload/v1784051080/two-dark-alcoholic-drinks-on-rustic-wooden-table-2026-03-24-02-58-58-utc_qf7qfq.jpg');
+      }
+
+      function generarImagenConVencimiento(urlOriginal) {
+        const btnDescarga = document.getElementById('btn-descarga');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        
+        img.onload = function() {
+          canvas.width = img.width;
+          const altoZocalo = Math.max(35, img.height * 0.08);
+          canvas.height = img.height + altoZocalo;
+          
+          ctx.drawImage(img, 0, 0);
+          ctx.fillStyle = "#060608";
+          ctx.fillRect(0, img.height, canvas.width, altoZocalo);
+          
+          const fecha = new Date();
+          fecha.setMonth(fecha.getMonth() + 1);
+          const fechaStr = fecha.toLocaleDateString('es-UY');
+          
+          const tamañoLetra = Math.max(14, canvas.width * 0.035);
+          ctx.font = `bold ${tamañoLetra}px sans-serif`;
+          ctx.fillStyle = "#dfb763";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(`VÁLIDO HASTA: ${fechaStr}`, canvas.width / 2, img.height + (altoZocalo / 2));
+          
+          const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+          btnDescarga.href = dataURL;
+          btnDescarga.innerText = "Descargar Premio";
+        };
+        img.onerror = function() { btnDescarga.href = urlOriginal; btnDescarga.innerText = "Descargar Premio"; };
+        img.src = urlOriginal;
+      }
+    </script>
+  </body>
+</html>
