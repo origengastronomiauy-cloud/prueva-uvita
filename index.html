@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>La Uvita - Nube de Voces</title>
     <style>
+      /* --- ESTÉTICA PREMIUM & GLASSMORPHISM --- */
       body { 
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
         background: #060608; background: radial-gradient(circle at 50% 0%, #1a1a24 0%, #060608 80%);
         color: #ffffff; text-align: center; padding: 20px; display: flex; 
-        justify-content: center; align-items: center; min-height: 100vh; margin: 0; 
+        justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow-x: hidden;
       }
       .container { 
         background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -20,24 +21,41 @@
       @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
       .pantalla { animation: fadeIn 0.4s ease-out forwards; }
       @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+      
       .logo { width: 180px; margin-bottom: 25px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
       .logo-glow { width: 180px; margin-bottom: 30px; animation: pulseGlow 1.2s infinite alternate ease-in-out; }
       @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px rgba(223, 183, 99, 0.2)); transform: scale(0.98); } 100% { filter: drop-shadow(0 0 35px rgba(223, 183, 99, 0.95)); transform: scale(1.05); } }
+      
       .spinner-text { color: #d8b05c; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; animation: blink 1.5s infinite; font-weight: bold; }
       @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
       h3 { font-family: 'Georgia', serif; font-size: 24px; margin: 0 0 20px 0; font-weight: 400; line-height: 1.4; }
+      
       .btn { display: block; width: 100%; padding: 16px; margin: 10px auto; border: none; border-radius: 14px; cursor: pointer; font-weight: 600; background: linear-gradient(135deg, #dfb763 0%, #c29543 100%); color: #0b0b0e; transition: transform 0.1s ease, box-shadow 0.3s ease; font-size: 16px; box-shadow: 0 4px 15px rgba(223, 183, 99, 0.2); }
       .btn:active { transform: scale(0.96); box-shadow: 0 2px 5px rgba(223, 183, 99, 0.1); }
+      
       input { width: 100%; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(0,0,0,0.3); color: #ffffff; border-radius: 14px; box-sizing: border-box; text-align: center; font-size: 18px; outline: none; transition: all 0.3s ease; }
       input:focus { border-color: #d8b05c; background-color: rgba(0,0,0,0.5); box-shadow: 0 0 0 2px rgba(216, 176, 92, 0.2); }
-      .contenedor-nube { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 25px 15px; margin-bottom: 25px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; min-height: 200px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
-      .palabra { font-family: 'Georgia', serif; display: inline-block; animation: flotar 3s ease-in-out infinite alternate; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: transform 0.3s; margin: 0 4px; }
-      @keyframes flotar { 0% { transform: translateY(0px); } 100% { transform: translateY(-6px); } }
+      
+      /* --- DISEÑO DE LA NUBE MEJORADO --- */
+      .contenedor-nube { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 35px 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 15px; min-height: 250px; box-shadow: inset 0 0 30px rgba(0,0,0,0.7); position: relative; overflow: hidden; }
+      
+      .palabra { font-family: 'Georgia', serif; display: inline-block; animation: flotar3D 4s ease-in-out infinite alternate; text-shadow: 0 5px 15px rgba(0,0,0,0.9); transition: all 0.5s ease; margin: 0 6px; position: relative; z-index: 2; }
+      @keyframes flotar3D { 0% { transform: translate(0px, 0px) rotate(-1deg); } 100% { transform: translate(4px, -8px) rotate(1deg); } }
+      
+      .palabra-top { font-weight: bold; text-shadow: 0 0 25px rgba(223, 183, 99, 1), 0 5px 15px rgba(0,0,0,0.9); z-index: 3; }
+      
+      /* Partículas doradas de fondo para la nube */
+      .nube-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at center, rgba(223, 183, 99, 0.05) 0%, transparent 70%); z-index: 1; pointer-events: none; }
+
       .premio-final { width: 100%; max-width: 280px; height: auto; border-radius: 20px; margin: 15px auto 25px auto; display: block; border: 3px solid #d8b05c; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
       .oculto { display: none !important; }
       .msg { color: #ff5252; margin-bottom: 15px; min-height: 20px; }
-      .modo-admin-container { max-width: 90% !important; min-height: 80vh !important; }
-      .modo-admin-nube { min-height: 50vh !important; }
+      
+      /* --- MODO PROYECTOR ADMIN --- */
+      .modo-admin-container { max-width: 95% !important; min-height: 90vh !important; border: none !important; box-shadow: none !important; background: transparent !important; }
+      .modo-admin-nube { min-height: 70vh !important; border: none; background: transparent; box-shadow: none; }
+      .admin-palabra { animation: flotarLento 6s ease-in-out infinite alternate; }
+      @keyframes flotarLento { 0% { transform: translateY(0px); } 100% { transform: translateY(-15px); } }
     </style>
   </head>
   <body>
@@ -60,8 +78,10 @@
       </div>
 
       <div id="pantalla-nube" class="pantalla oculto">
-        <h3 style="color: #d8b05c; font-size: 20px;">Nube de La Uvita</h3>
-        <div class="contenedor-nube" id="caja-nube"></div>
+        <h3 id="titulo-nube" style="color: #d8b05c; font-size: 20px;">Nube de La Uvita</h3>
+        <div class="contenedor-nube" id="caja-nube">
+          <div class="nube-bg"></div>
+        </div>
         <p id="texto-agradecimiento" style="color: #aaa; margin-bottom: 20px; font-size: 14px;">¡Gracias por ser parte de la historia!</p>
         <button id="btn-reclamar" class="btn" onclick="mostrarPremio()" style="animation: pulseGlow 2s infinite alternate;">Reclamar Premio: Uvita</button>
       </div>
@@ -72,10 +92,22 @@
         <a id="btn-descarga" href="#" download="Premio_Uvita.jpg" class="btn">Preparando imagen...</a>
       </div>
 
+      <!-- Pantalla de Login Admin -->
+      <div id="pantalla-admin-login" class="pantalla oculto">
+        <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo" style="width: 120px;" alt="Logo">
+        <h3 style="color: #d8b05c;">Modo Proyección</h3>
+        <input type="password" id="pass-admin" placeholder="Contraseña secreta">
+        <div id="msg-admin" class="msg"></div>
+        <button class="btn" onclick="verificarAdmin()">Iniciar Proyección</button>
+      </div>
+
     </div>
 
     <script>
-      const API_URL = "https://script.google.com/macros/s/AKfycbwQ1l1v676OoTNU8SVXU6-R07Ec1vmpGiIiMSHQnipm6ZS9cJ6Kkn46_UkpSrrpPMNn/exec"; // TU NUEVO LINK
+      // =================================================================
+      // ¡PEGÁ TU NUEVA URL DE APPS SCRIPT ACÁ!
+      const API_URL = "https://script.google.com/macros/s/AKfycbywbV60f8wl-ReeS5IJJbmmknMHjIEQYxGUheEDjdpIytR-UnHjQ9rmmc2bf7q-GNzEqQ/exec";
+      // =================================================================
 
       function vibrar(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
       function mostrar(id) {
@@ -83,29 +115,48 @@
         document.getElementById(id).classList.remove('oculto');
       }
 
+      // Sistema de Admin Seguro
       const urlParams = new URLSearchParams(window.location.search);
-      const modoAdmin = urlParams.get('modo') === 'admin';
+      const modoSolicitado = urlParams.get('modo') === 'admin';
+      let esAdminVerificado = false;
 
       window.addEventListener('DOMContentLoaded', () => {
-        if (modoAdmin) {
-          document.getElementById('caja-principal').classList.add('modo-admin-container');
-          document.getElementById('caja-nube').classList.add('modo-admin-nube');
-          document.getElementById('btn-reclamar').style.display = 'none';
-          document.getElementById('texto-agradecimiento').innerText = "Escanea el código QR de tu mesa para participar";
-          document.getElementById('texto-agradecimiento').style.fontSize = "18px";
-          mostrar('pantalla-nube');
-          
-          actualizarNubeEnVivo();
-          setInterval(actualizarNubeEnVivo, 5000);
+        if (modoSolicitado) {
+          mostrar('pantalla-admin-login');
         }
       });
 
+      function verificarAdmin() {
+        const pass = document.getElementById('pass-admin').value;
+        if (pass === "admin123") { // <-- ACÁ PODÉS CAMBIAR LA CONTRASEÑA
+          esAdminVerificado = true;
+          iniciarModoProyector();
+        } else {
+          document.getElementById('msg-admin').innerText = "Contraseña incorrecta";
+        }
+      }
+
+      function iniciarModoProyector() {
+        document.getElementById('caja-principal').classList.add('modo-admin-container');
+        document.getElementById('caja-nube').classList.add('modo-admin-nube');
+        document.getElementById('btn-reclamar').style.display = 'none';
+        document.getElementById('titulo-nube').style.fontSize = "40px";
+        document.getElementById('titulo-nube').style.marginBottom = "30px";
+        document.getElementById('texto-agradecimiento').innerText = "Escanea el QR de tu mesa para sumar tu voz";
+        document.getElementById('texto-agradecimiento').style.fontSize = "22px";
+        mostrar('pantalla-nube');
+        
+        actualizarNubeEnVivo();
+        setInterval(actualizarNubeEnVivo, 4000); // Actualiza cada 4 segundos
+      }
+
       async function actualizarNubeEnVivo() {
         try {
-          const respuesta = await fetch(`${API_URL}?accion=leerNube`);
-          const res = await respuesta.json();
+          const respuesta = await fetch(`${API_URL}?action=leerNube`);
+          const text = await respuesta.text();
+          const res = JSON.parse(text);
           if(res.exito) dibujarNube(res.palabras);
-        } catch (e) { console.log("Reintentando..."); }
+        } catch (e) { console.log("Reintentando conexión..."); }
       }
 
       async function enviarPalabra() {
@@ -119,17 +170,20 @@
         mostrar('pantalla-carga');
 
         try {
-          // Petición GET limpia y directa hacia Google
-          const [res] = await Promise.all([
-            fetch(`${API_URL}?accion=enviarPalabra&palabra=${encodeURIComponent(palabra)}`).then(r => r.json()),
-            new Promise(resolve => setTimeout(resolve, 1800))
+          const urlPeticion = `${API_URL}?action=enviarPalabra&palabra=${encodeURIComponent(palabra)}`;
+          
+          const [resText] = await Promise.all([
+            fetch(urlPeticion).then(r => r.text()),
+            new Promise(resolve => setTimeout(resolve, 1500))
           ]);
+
+          const res = JSON.parse(resText);
 
           if(res.exito) {
             dibujarNube(res.palabras);
             mostrar('pantalla-nube');
             vibrar([50, 50]);
-          } else { throw new Error("Error en servidor"); }
+          } else { throw new Error(res.error || "Error del servidor"); }
         } catch (e) {
           mostrar('pantalla-ingreso');
           document.getElementById('msg').innerText = "Hubo un error de conexión. Intentá de nuevo.";
@@ -138,32 +192,36 @@
 
       function dibujarNube(palabras) {
         const caja = document.getElementById('caja-nube');
-        caja.innerHTML = "";
+        // Mantener el fondo estrellado
+        caja.innerHTML = '<div class="nube-bg"></div>';
         if(palabras.length === 0) return;
 
         const tamaños = palabras.map(p => p.size);
         const maxRep = Math.max(...tamaños);
         const minRep = Math.min(...tamaños);
-        const paleta = ["#dfb763", "#c29543", "#ffffff", "#f0e6d2", "#d8b05c"];
+        
+        // Paleta premium
+        const paleta = ["#dfb763", "#c29543", "#ffffff", "#f0e6d2", "#d8b05c", "#e6c981"];
 
         palabras.sort(() => Math.random() - 0.5);
 
         palabras.forEach(item => {
           const span = document.createElement('span');
           span.innerText = item.text;
-          span.className = 'palabra';
+          
+          // Efecto proyector vs celular
+          span.className = esAdminVerificado ? 'palabra admin-palabra' : 'palabra';
 
-          let factorBase = modoAdmin ? 35 : 14; 
-          let multiplicador = modoAdmin ? 50 : 28;
+          let factorBase = esAdminVerificado ? 40 : 16; 
+          let multiplicador = esAdminVerificado ? 65 : 32;
           let fontSize = maxRep === minRep ? factorBase + 10 : factorBase + ((item.size - minRep) / (maxRep - minRep)) * multiplicador;
           
           span.style.fontSize = fontSize + "px";
           span.style.color = paleta[Math.floor(Math.random() * paleta.length)];
-          span.style.animationDelay = (Math.random() * 2) + "s";
+          span.style.animationDelay = (Math.random() * 3) + "s";
           
           if(item.size === maxRep && maxRep > 1) {
-            span.style.textShadow = "0 0 15px rgba(223, 183, 99, 0.8)";
-            span.style.fontWeight = "bold";
+            span.classList.add('palabra-top');
           }
           caja.appendChild(span);
         });
