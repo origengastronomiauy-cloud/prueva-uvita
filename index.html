@@ -2,7 +2,6 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8">
-    <!-- Meta tag estricto para móviles: bloquea el zoom táctil -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>La Uvita - Nube de Voces</title>
     <style>
@@ -12,13 +11,12 @@
         background: #060608; background: radial-gradient(circle at 50% 0%, #1a1a24 0%, #060608 80%);
         color: #ffffff; text-align: center; padding: 20px; display: flex; 
         justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow-x: hidden;
-        
-        /* OPTIMIZACIONES MÓVILES CLAVE */
-        overscroll-behavior-y: none; /* Bloquea el "Tirar para recargar" */
-        -webkit-tap-highlight-color: transparent; /* Quita el recuadro azul al tocar */
-        user-select: none; /* Evita que la gente seleccione texto por accidente */
-        -webkit-user-select: none;
+        overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; 
+        user-select: none; -webkit-user-select: none;
       }
+      
+      /* Clase dinámica para bloquear el scroll en el modo proyector */
+      body.modo-proyector { overflow: hidden !important; padding: 0 !important; margin: 0 !important; }
       
       .container { 
         background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -27,7 +25,7 @@
         animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
       @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-      .pantalla { animation: fadeIn 0.4s ease-out forwards; }
+      .pantalla { animation: fadeIn 0.4s ease-out forwards; width: 100%; }
       @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
       
       .logo { width: 180px; margin-bottom: 25px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
@@ -44,32 +42,47 @@
       input { 
         width: 100%; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); 
         background-color: rgba(0,0,0,0.3); color: #ffffff; border-radius: 14px; box-sizing: border-box; 
-        text-align: center; outline: none; transition: all 0.3s ease; 
-        
-        /* Reglas clave para el input */
-        font-size: 18px; /* Si es menor a 16px, iPhone hace zoom automático (lo evitamos) */
-        user-select: auto; /* Habilitamos selección SOLO acá para que puedan escribir */
-        -webkit-user-select: auto;
+        text-align: center; font-size: 18px; outline: none; transition: all 0.3s ease; 
+        user-select: auto; -webkit-user-select: auto;
       }
       input:focus { border-color: #d8b05c; background-color: rgba(0,0,0,0.5); box-shadow: 0 0 0 2px rgba(216, 176, 92, 0.2); }
       
       /* --- DISEÑO DE LA NUBE --- */
       .contenedor-nube { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 35px 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 15px; min-height: 250px; box-shadow: inset 0 0 30px rgba(0,0,0,0.7); position: relative; overflow: hidden; }
       
-      .palabra { font-family: 'Georgia', serif; display: inline-block; animation: flotar3D 4s ease-in-out infinite alternate; text-shadow: 0 5px 15px rgba(0,0,0,0.9); transition: all 0.5s ease; margin: 0 6px; position: relative; z-index: 2; }
+      .palabra { font-family: 'Georgia', serif; display: inline-block; animation: flotar3D 4s ease-in-out infinite alternate; text-shadow: 0 5px 15px rgba(0,0,0,0.9); transition: all 0.5s ease; margin: 0 6px; position: relative; z-index: 2; line-height: 1.1; }
       @keyframes flotar3D { 0% { transform: translate(0px, 0px) rotate(-1deg); } 100% { transform: translate(4px, -8px) rotate(1deg); } }
-      
       .palabra-top { font-weight: bold; text-shadow: 0 0 25px rgba(223, 183, 99, 1), 0 5px 15px rgba(0,0,0,0.9); z-index: 3; }
       
       .nube-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at center, rgba(223, 183, 99, 0.05) 0%, transparent 70%); z-index: 1; pointer-events: none; }
-
       .oculto { display: none !important; }
       .msg { color: #ff5252; margin-bottom: 15px; min-height: 20px; }
       
-      /* --- MODO PROYECTOR ADMIN --- */
-      .modo-admin-container { max-width: 95% !important; min-height: 90vh !important; border: none !important; box-shadow: none !important; background: transparent !important; }
-      .modo-admin-nube { min-height: 70vh !important; border: none; background: transparent; box-shadow: none; }
-      .admin-palabra { animation: flotarLento 6s ease-in-out infinite alternate; }
+      /* --- SUPER MODO PROYECTOR ADMIN --- */
+      .modo-admin-container { 
+        max-width: 100vw !important; 
+        height: 100vh !important; 
+        border-radius: 0 !important; 
+        border: none !important; 
+        box-shadow: none !important; 
+        background: transparent !important; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center;
+        padding: 0 !important;
+      }
+      .modo-admin-nube { 
+        width: 95vw !important; 
+        height: 70vh !important; 
+        border: none; 
+        background: transparent; 
+        box-shadow: none; 
+        align-content: center; /* Empaqueta las palabras verticalmente al centro */
+        gap: 1.5vw;
+        padding: 0 !important;
+      }
+      .admin-palabra { animation: flotarLento 6s ease-in-out infinite alternate; margin: 0 1vw; }
       @keyframes flotarLento { 0% { transform: translateY(0px); } 100% { transform: translateY(-15px); } }
     </style>
   </head>
@@ -77,6 +90,7 @@
     
     <div class="container" id="caja-principal">
       
+      <!-- Pantalla 1: Ingreso -->
       <div id="pantalla-ingreso" class="pantalla">
         <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo" alt="Logo ORIGEN">
         <h3 style="color: #d8b05c;">La Uvita</h3>
@@ -87,11 +101,13 @@
         <button class="btn" onclick="enviarPalabra()">Dejar mi marca</button>
       </div>
 
+      <!-- Pantalla 2: Cargando -->
       <div id="pantalla-carga" class="pantalla oculto">
         <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo-glow" alt="Cargando">
         <div class="spinner-text">Procesando voces...</div>
       </div>
 
+      <!-- Pantalla 3: La Nube -->
       <div id="pantalla-nube" class="pantalla oculto">
         <h3 id="titulo-nube" style="color: #d8b05c; font-size: 20px;">Nube de La Uvita</h3>
         <div class="contenedor-nube" id="caja-nube">
@@ -101,6 +117,7 @@
         <button class="btn" onclick="window.location.reload()" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none;">Enviar otra palabra</button>
       </div>
 
+      <!-- Pantalla 4: Login Admin -->
       <div id="pantalla-admin-login" class="pantalla oculto">
         <img src="https://res.cloudinary.com/f8l7nucq/image/upload/v1784049017/Origen_logo_p1hlex.png" class="logo" style="width: 120px;" alt="Logo">
         <h3 style="color: #d8b05c;">Modo Proyección</h3>
@@ -136,7 +153,7 @@
         const pass = document.getElementById('pass-admin').value;
         if (pass === "admin123") {
           esAdminVerificado = true;
-          document.getElementById('pass-admin').blur(); // Oculta teclado
+          document.getElementById('pass-admin').blur();
           iniciarModoProyector();
         } else {
           document.getElementById('msg-admin').innerText = "Contraseña incorrecta";
@@ -144,12 +161,16 @@
       }
 
       function iniciarModoProyector() {
+        // Configuramos la pantalla para que sea full-screen sin bordes ni scroll
+        document.body.classList.add('modo-proyector');
         document.getElementById('caja-principal').classList.add('modo-admin-container');
         document.getElementById('caja-nube').classList.add('modo-admin-nube');
-        document.getElementById('titulo-nube').style.fontSize = "40px";
-        document.getElementById('titulo-nube').style.marginBottom = "30px";
+        
+        // Tamaños de títulos dinámicos en VW (Viewport Width)
+        document.getElementById('titulo-nube').style.fontSize = "3.5vw";
+        document.getElementById('titulo-nube').style.marginBottom = "2vw";
         document.getElementById('texto-agradecimiento').innerText = "Escanea el QR de tu mesa para sumar tu voz";
-        document.getElementById('texto-agradecimiento').style.fontSize = "22px";
+        document.getElementById('texto-agradecimiento').style.fontSize = "1.8vw";
         
         const btnVolver = document.querySelector('#pantalla-nube button');
         if(btnVolver) btnVolver.style.display = 'none';
@@ -175,16 +196,13 @@
         if(palabra === "") { document.getElementById('msg').innerText = "Por favor, ingresá una palabra."; return; }
         if(palabra.includes(" ")) { document.getElementById('msg').innerText = "Solo se permite UNA palabra."; return; }
 
-        // Ocultar el teclado del celular inmediatamente
         inputEl.blur(); 
-        
         vibrar(30);
         document.getElementById('msg').innerText = "";
         mostrar('pantalla-carga');
 
         try {
           const urlPeticion = `${API_URL}?action=enviarPalabra&palabra=${encodeURIComponent(palabra)}`;
-          
           const [resText] = await Promise.all([
             fetch(urlPeticion).then(r => r.text()),
             new Promise(resolve => setTimeout(resolve, 1500))
@@ -208,6 +226,13 @@
         caja.innerHTML = '<div class="nube-bg"></div>';
         if(palabras.length === 0) return;
 
+        // Limitar la cantidad de palabras en pantalla para no saturar visualmente
+        // Top 75 para proyector, Top 40 para celular.
+        const limiteMaximo = esAdminVerificado ? 75 : 40;
+        if (palabras.length > limiteMaximo) {
+          palabras = palabras.slice(0, limiteMaximo);
+        }
+
         const tamaños = palabras.map(p => p.size);
         const maxRep = Math.max(...tamaños);
         const minRep = Math.min(...tamaños);
@@ -219,14 +244,24 @@
         palabras.forEach(item => {
           const span = document.createElement('span');
           span.innerText = item.text;
-          
           span.className = esAdminVerificado ? 'palabra admin-palabra' : 'palabra';
 
-          let factorBase = esAdminVerificado ? 40 : 16; 
-          let multiplicador = esAdminVerificado ? 65 : 32;
-          let fontSize = maxRep === minRep ? factorBase + 10 : factorBase + ((item.size - minRep) / (maxRep - minRep)) * multiplicador;
+          let fontSize;
+          if (esAdminVerificado) {
+            // Tamaños en formato VW (proporcional al ancho de la tele/proyector)
+            let minVw = 1.5;
+            let maxVw = 7.5;
+            let sizeVw = maxRep === minRep ? 3.5 : minVw + ((item.size - minRep) / (maxRep - minRep)) * (maxVw - minVw);
+            fontSize = sizeVw + "vw";
+          } else {
+            // Tamaños en formato PX (ideal para celulares)
+            let minPx = 14;
+            let maxPx = 42;
+            let sizePx = maxRep === minRep ? 24 : minPx + ((item.size - minRep) / (maxRep - minRep)) * (maxPx - minPx);
+            fontSize = sizePx + "px";
+          }
           
-          span.style.fontSize = fontSize + "px";
+          span.style.fontSize = fontSize;
           span.style.color = paleta[Math.floor(Math.random() * paleta.length)];
           span.style.animationDelay = (Math.random() * 3) + "s";
           
